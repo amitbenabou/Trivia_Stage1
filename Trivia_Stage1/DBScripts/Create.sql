@@ -8,6 +8,25 @@ go
 Use [TriviaDB]
 Go
 
+create table QuestionSubject (
+[SubjectId] int identity (1,1) not null primary key,
+[name] NVARCHAR(20) NOT NULL
+);
+go
+
+create table QuestionStatus (
+[StatusId] int not null primary key,
+[name] NVARCHAR(20) NOT NULL
+);
+go
+
+create table PlayerType (
+[TypeId] int  not null primary key,
+[name] NVARCHAR(20) NOT NULL
+);
+GO
+
+
 CREATE TABLE Player(
     [PlayerId] INT IDENTITY (1, 1) NOT NULL primary key,
     [PlayerName] NVARCHAR (20) NOT NULL,
@@ -19,31 +38,39 @@ CREATE TABLE Player(
 go 
 
 CREATE TABLE Questions(
-    [QuestionId] int identity(1,1) not null primary key
+    [QuestionId] int identity(1,1) not null primary key,
     [StatusId] int NOT NULL foreign key references QuestionStatus(StatusId),
     [PlayerId] int NOT NULL foreign key references Player(PlayerId),
     [SubjectId] int NOT NULL foreign key references QuestionSubject(SubjectId),
     [correctAnswer] NVARCHAR(256) NOT NULL,  
-    [wrongAnswer] NVARCHAR(256) NOT NULL,
-    [wrongAnswer] NVARCHAR(256) NOT NULL,
-    [wrongAnswer] NVARCHAR(256) NOT NULL,
+    [wrongAnswer1] NVARCHAR(256) NOT NULL,
+    [wrongAnswer2] NVARCHAR(256) NOT NULL,
+    [wrongAnswer3] NVARCHAR(256) NOT NULL,
     [Text] NVARCHAR(256) NOT NUll,    
 );
 go
 
-create table PlayerType (
-[TypeId] int  not null primary key,
-[name] NVARCHAR(20) NOT NULL
-);
+insert into PlayerType (TypeId,name) values (1,'Manager');
+insert into PlayerType (TypeId,name) values (2,'Master');
+insert into PlayerType (TypeId,name) values (3,'Tiron');
+select * from PlayerType
+go
 
-GO
-create table QuestionStatus (
-[StatusId] int not null primary key,
-[name] NVARCHAR(20) NOT NULL
-);
+insert into QuestionStatus (StatusId, name) values (1, 'Approved');
+insert into QuestionStatus (StatusId, name) values (2, 'Wating');
+insert into QuestionStatus (StatusId, name) values (3, 'failed');
+select * from QuestionStatus
 go
-create table QuestionSubject (
-[SubjectId] int identity (1,1) not null primary key,
-[name] NVARCHAR(20) NOT NULL
-);
+
+insert into QuestionSubject (name) values ('History')
+insert into QuestionSubject (name) values ( 'Sports')
+insert into QuestionSubject (name) values ('Politics')
+insert into QuestionSubject (name) values ( 'Ramon')
+insert into QuestionSubject (name) values ('Science')
+select * from QuestionSubject
 go
+
+insert into Player(typeID,PlayerName,PlayerMail,PlayerScore,Password) values(1,'Hadas','hadas@gmail.com',0,'Hg2501');
+select * from Player
+go
+ insert into  Questions   (StatusId,PlayerId,SubjectId,correctAnswer,wrongAnswer1,wrongAnswer2,wrongAnswer3,Text) values (1,1,4,'ilan ramon','amit ramon', 'hadas ramon','adar ramon','what is the name of the school?');
