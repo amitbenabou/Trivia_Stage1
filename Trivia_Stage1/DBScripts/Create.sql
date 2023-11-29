@@ -74,3 +74,5 @@ insert into Player(typeID,PlayerName,PlayerMail,PlayerScore,Password) values(1,'
 select * from Player
 go
  insert into  Questions   (StatusId,PlayerId,SubjectId,correctAnswer,wrongAnswer1,wrongAnswer2,wrongAnswer3,Text) values (1,1,4,'ilan ramon','amit ramon', 'hadas ramon','adar ramon','what is the name of the school?');
+ select * from Player
+go
