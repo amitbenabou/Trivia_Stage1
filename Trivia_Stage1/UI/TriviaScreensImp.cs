@@ -33,6 +33,7 @@ namespace Trivia_Stage1.UI
             //Loop through inputs until a user/player is created or 
             //user choose to go back to menu
             char c = ' ';
+           
             while (c != 'B' && c != 'b' && this.currentPlayer == null)
             {
                 //Clear screen
@@ -70,6 +71,7 @@ namespace Trivia_Stage1.UI
                 {
                     TriviaDbContext db = new TriviaDbContext();
                     this.currentPlayer = db.AddSignUpUser(email, password, name);
+                  
                 }
                 catch (Exception ex)
                 {
@@ -105,6 +107,71 @@ namespace Trivia_Stage1.UI
         }
         public void ShowProfile()
         {
+            char c = ' ';
+            CleareAndTtile("Profile");
+            TriviaDbContext db= new TriviaDbContext();  
+            if(this.currentPlayer == null ) 
+            {
+                Console.WriteLine(" you need to login first");
+                Console.ReadKey(true);
+                return;
+            }
+            Console.WriteLine($"Name:\t{currentPlayer.PlayerName}");
+            Console.WriteLine($"Mail:\t{currentPlayer.PlayerMail}");
+            Console.WriteLine($"password:\t{currentPlayer.Password}");
+            Console.WriteLine($"TypePlayer:\t{currentPlayer.PlayerId}");
+            Console.WriteLine($"Player score:\t{currentPlayer.PlayerScore}");
+            Console.WriteLine(" Press (M) To Update The Mail");
+            c = Console.ReadKey(true).KeyChar;
+            Console.WriteLine(" Press (N) To Update The Name");
+            c = Console.ReadKey(true).KeyChar;
+            Console.WriteLine(" Press (P) To Update The Password");
+            c = Console.ReadKey(true).KeyChar;
+            if (c == 'M')
+            {
+                Console.Write("Please Type your new  email: ");
+                string email  = Console.ReadLine();
+                while (!IsEmailValid(email))
+                {
+                    Console.Write("Bad Email Format! Please try again:");
+                    email = Console.ReadLine();
+                }
+                this.currentPlayer.PlayerMail = email;
+                db.Add(email);
+                db.SaveChanges();
+
+            }
+            if (c == 'N')
+            {
+
+                Console.Write("Please Type your Name: ");
+                string name = Console.ReadLine();
+                while (!IsNameValid(name))
+                {
+                    Console.Write("name must be at least 3 characters! Please try again: ");
+                    name = Console.ReadLine();
+                }
+                this.currentPlayer.PlayerName = name;
+                db.Add(name);
+                db.SaveChanges();
+            }
+            if (c == 'P')
+            {
+                Console.Write("Please Type your new  password: ");
+                string password = Console.ReadLine();
+                while (!IsPasswordValid(password))
+                {
+                    Console.Write("password must be at least 4 characters! Please try again: ");
+                    password = Console.ReadLine();
+                }
+               
+                this.currentPlayer.Password = password;
+                db.Add(password);
+                
+                db.SaveChanges();
+            }
+
+
             Console.WriteLine("Not implemented yet! Press any key to continue...");
             Console.ReadKey(true);
         }
