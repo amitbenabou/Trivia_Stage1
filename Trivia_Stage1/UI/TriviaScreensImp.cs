@@ -15,6 +15,7 @@ namespace Trivia_Stage1.UI
         //Place here any state you would like to keep during the app life time
         //For example, player login details...
         private Player currentPlayer;
+        private Question currentQuestion;
 
         //Implememnt interface here
         public bool ShowLogin()
@@ -33,13 +34,14 @@ namespace Trivia_Stage1.UI
             //Loop through inputs until a user/player is created or 
             //user choose to go back to menu
             char c = ' ';
+            bool success = true;
             while (c != 'B' && c != 'b' && this.currentPlayer == null)
             {
                 //Clear screen
                 CleareAndTtile("Signup");
 
                 Console.Write("Please Type your email: ");
-                string email = Console.ReadLine();
+                string? email = Console.ReadLine();
                 while (!IsEmailValid(email))
                 {
                     Console.Write("Bad Email Format! Please try again:");
@@ -47,7 +49,7 @@ namespace Trivia_Stage1.UI
                 }
 
                 Console.Write("Please Type your password: ");
-                string password = Console.ReadLine();
+                string? password = Console.ReadLine();
                 while (!IsPasswordValid(password))
                 {
                     Console.Write("password must be at least 4 characters! Please try again: ");
@@ -55,7 +57,7 @@ namespace Trivia_Stage1.UI
                 }
 
                 Console.Write("Please Type your Name: ");
-                string name = Console.ReadLine();
+                string? name = Console.ReadLine();
                 while (!IsNameValid(name))
                 {
                     Console.Write("name must be at least 3 characters! Please try again: ");
@@ -70,10 +72,13 @@ namespace Trivia_Stage1.UI
                 {
                     TriviaDbContext db = new TriviaDbContext();
                     this.currentPlayer = db.AddSignUpUser(email, password, name);
+                    Console.WriteLine("well done");
+                    success = true;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Failed to signup! Email may already exist in DB!");
+                    success = false;
                 }
 
 
@@ -84,13 +89,87 @@ namespace Trivia_Stage1.UI
                 c = Console.ReadKey(true).KeyChar;
             }
             //return true if signup suceeded!
-            return (false);
+            return (success);
         }
 
         public void ShowAddQuestion()
         {
-            Console.WriteLine("Not implemented yet! Press any key to continue...");
-            Console.ReadKey(true);
+            char c = ' ';
+            bool successQ = true;
+            this.currentQuestion = null;
+            if (this.currentPlayer.PlayerScore <= 100 || this.currentPlayer.TypeId != 1)
+            {
+                Console.WriteLine("you cant add question");
+                Console.WriteLine("Press (B)ack to go back or any other key to signup again...");
+                c = Console.ReadKey(true).KeyChar;
+            }
+            else
+            {
+                while (c != 'B' && c != 'b')
+                {
+                    CleareAndTtile("add question");
+                    Console.Write("Please Type your question subject ");
+                    int QuestionSubject = int.Parse(Console.ReadLine());
+                    while (QuestionSubject < 1)
+                    {
+                        Console.Write("Question length cant be under 1,Please Type your question subject again ");
+                        QuestionSubject = int.Parse(Console.ReadLine());
+                    }
+                    Console.Write("Please Type your question");
+                    string? QuestionText = Console.ReadLine();
+                    while (QuestionText.Length < 5)
+                    {
+                        Console.Write("Question length cant be under 5,Please Type your question again ");
+                        QuestionText = Console.ReadLine();
+                    }
+                    Console.Write("Please Type a correct answer ");
+                    string? correctAnswer = Console.ReadLine();
+                    while (correctAnswer.Length < 5)
+                    {
+                        Console.Write("correct Answer cant be under 5,Please Type your correct Answer again ");
+                        correctAnswer = Console.ReadLine();
+                    }
+                    Console.Write("Please Type 3 wrong answer ");
+                    string? wrongAnswer1 = Console.ReadLine();
+                    while (wrongAnswer1.Length < 5)
+                    {
+                        Console.Write("wrong Answer cant be under 5,Please Type your wrong Answer again ");
+                        wrongAnswer1 = Console.ReadLine();
+                    }
+                    string? wrongAnswer2 = Console.ReadLine();
+                    while (wrongAnswer2.Length < 5)
+                    {
+                        Console.Write("wrong Answer cant be under 5,Please Type your wrong Answer again ");
+                        wrongAnswer2 = Console.ReadLine();
+                    }
+                    string? wrongAnswer3 = Console.ReadLine();
+                    while (wrongAnswer3.Length < 5)
+                    {
+                        Console.Write("wrong Answer cant be under 5,Please Type your wrong Answer again ");
+                        wrongAnswer3 = Console.ReadLine();
+                    }
+
+                    try
+                    {
+                        TriviaDbContext db = new TriviaDbContext();
+                        this.currentQuestion = db.AddNewQuestion(QuestionSubject, QuestionText, correctAnswer,wrongAnswer1,wrongAnswer2,wrongAnswer3);
+                        Console.WriteLine("well done, question is now pending");
+                        successQ = true;
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Failed to add question!");
+                        successQ = false;
+                    }
+                }
+                Console.WriteLine("Press (B)ack to go back or any other key to signup again...");
+                c = Console.ReadKey(true).KeyChar;
+               
+            }
+           
+
         }
 
         public void ShowPendingQuestions()
