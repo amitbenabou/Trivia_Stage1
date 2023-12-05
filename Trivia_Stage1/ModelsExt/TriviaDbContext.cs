@@ -39,4 +39,15 @@ public partial class TriviaDbContext : DbContext
 
         return question;
     }
+
+    public void UpdatePlayer(Player p)
+    {
+        Entry(p).State = EntityState.Modified;
+        SaveChanges();
+    }
+    public void GetQuestion(Question question)
+    {
+
+     
+    }
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Trivia_Stage1.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace Trivia_Stage1.UI
 {
     public class TriviaScreensImp:ITriviaScreens
@@ -20,6 +20,17 @@ namespace Trivia_Stage1.UI
         //Implememnt interface here
         public bool ShowLogin()
         {
+            Player P = new Player()
+            {
+                PlayerName = "Hadas",
+                PlayerMail = "Hadas@gmail.com",
+                PlayerId = 1,
+                PlayerScore = 0,
+                Password = "kkkk",
+                TypeId = 1
+                
+            };
+            this.currentPlayer = P;
             Console.WriteLine("Not implemented yet! Press any key to continue...");
             Console.ReadKey(true);
             return true;
@@ -179,6 +190,25 @@ namespace Trivia_Stage1.UI
         }
         public void ShowGame()
         {
+          
+            if(currentPlayer!= null) 
+            {
+                
+
+
+
+
+
+
+
+            }
+            
+
+
+
+
+
+
             Console.WriteLine("Not implemented yet! Press any key to continue...");
             Console.ReadKey(true);
         }
@@ -186,71 +216,81 @@ namespace Trivia_Stage1.UI
         {
             char c = ' ';
             CleareAndTtile("Profile");
-            TriviaDbContext db= new TriviaDbContext();  
-            if(this.currentPlayer == null ) 
+            TriviaDbContext db= new TriviaDbContext();
+            while (c!= 'B'&& c!='b')
             {
-                Console.WriteLine(" you need to login first");
-                Console.ReadKey(true);
-                return;
-            }
-            Console.WriteLine($"Name:\t{currentPlayer.PlayerName}");
-            Console.WriteLine($"Mail:\t{currentPlayer.PlayerMail}");
-            Console.WriteLine($"password:\t{currentPlayer.Password}");
-            Console.WriteLine($"TypePlayer:\t{currentPlayer.PlayerId}");
-            Console.WriteLine($"Player score:\t{currentPlayer.PlayerScore}");
-            Console.WriteLine(" Press (M) To Update The Mail");
-            c = Console.ReadKey(true).KeyChar;
-            Console.WriteLine(" Press (N) To Update The Name");
-            c = Console.ReadKey(true).KeyChar;
-            Console.WriteLine(" Press (P) To Update The Password");
-            c = Console.ReadKey(true).KeyChar;
-            if (c == 'M')
-            {
-                Console.Write("Please Type your new  email: ");
-                string email  = Console.ReadLine();
-                while (!IsEmailValid(email))
+                bool Updated = false;
+                if (this.currentPlayer == null)
                 {
-                    Console.Write("Bad Email Format! Please try again:");
-                    email = Console.ReadLine();
+                    Console.WriteLine(" you need to login first");
+                    Console.ReadKey(true);
+                    return;
                 }
-                this.currentPlayer.PlayerMail = email;
-                db.Add(email);
-                db.SaveChanges();
-
-            }
-            if (c == 'N')
-            {
-
-                Console.Write("Please Type your Name: ");
-                string name = Console.ReadLine();
-                while (!IsNameValid(name))
+                Console.WriteLine($"Name:\t{currentPlayer.PlayerName}");
+                Console.WriteLine($"Mail:\t{currentPlayer.PlayerMail}");
+                Console.WriteLine($"password:\t{currentPlayer.Password}");
+                Console.WriteLine($"TypePlayer:\t{currentPlayer.TypeId}");
+                Console.WriteLine($"PlayerID:\t{currentPlayer.PlayerId}");
+                Console.WriteLine($"Player score:\t{currentPlayer.PlayerScore}");
+                Console.WriteLine(" Press (M) To Update The Mail Press (N) To Update The Name Press (P) To Update The Password");
+                c = Console.ReadKey(true).KeyChar;
+              
+                if (c == 'M'||c=='m')
                 {
-                    Console.Write("name must be at least 3 characters! Please try again: ");
-                    name = Console.ReadLine();
+                    Console.Write("Please Type your new  email: ");
+                    string email = Console.ReadLine();
+                    while (!IsEmailValid(email))
+                    {
+                        Console.Write("Bad Email Format! Please try again:");
+                        email = Console.ReadLine();
+                    }
+                    this.currentPlayer.PlayerMail = email;
+                    Updated = true;         
+
                 }
-                this.currentPlayer.PlayerName = name;
-                db.Add(name);
-                db.SaveChanges();
-            }
-            if (c == 'P')
-            {
-                Console.Write("Please Type your new  password: ");
-                string password = Console.ReadLine();
-                while (!IsPasswordValid(password))
+                if (c == 'N' || c == 'n')
                 {
-                    Console.Write("password must be at least 4 characters! Please try again: ");
-                    password = Console.ReadLine();
+
+                    Console.Write("Please Type your  NEW Name: ");
+                    string name = Console.ReadLine();
+                    while (!IsNameValid(name))
+                    {
+                        Console.Write("name must be at least 3 characters! Please try again: ");
+                        name = Console.ReadLine();
+                    }
+                    this.currentPlayer.PlayerName = name;
+                    Updated = true;
+
                 }
-               
-                this.currentPlayer.Password = password;
-                db.Add(password);
-                
-                db.SaveChanges();
+                if (c == 'P'|| c=='p')
+                {
+                    Console.Write("Please Type your new  password: ");
+                    string password = Console.ReadLine();
+                    while (!IsPasswordValid(password))
+                    {
+                        Console.Write("password must be at least 4 characters! Please try again: ");
+                        password = Console.ReadLine();
+                    }
+
+                    this.currentPlayer.Password = password;
+                    Updated=true;
+                   
+                }
+                try
+                {
+                    db.UpdatePlayer(currentPlayer);
+                    Console.WriteLine("your changes succseeded");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("failed changes try again");
+                }
+                Console.WriteLine("Press (B)ack to go back to menu");
+                c = Console.ReadKey(true).KeyChar;
+                Console.Clear();    
             }
 
-
-            Console.WriteLine("Not implemented yet! Press any key to continue...");
-            Console.ReadKey(true);
+            
         }
 
         //Private helper methodfs down here...
