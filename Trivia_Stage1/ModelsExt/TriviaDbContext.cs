@@ -55,7 +55,7 @@ public partial class TriviaDbContext : DbContext
         return  this.QuestionSubjects.ToList();
     }
 
-    }
+    
     public void  UpdatePlayer(Player p)
     {
         Entry(p).State=EntityState.Modified;
