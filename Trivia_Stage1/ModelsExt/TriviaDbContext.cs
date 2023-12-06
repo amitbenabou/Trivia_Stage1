@@ -29,18 +29,13 @@ public partial class TriviaDbContext : DbContext
 
         return player;
     }
-    public Question AddNewQuestion(Question Q)
+    public Question AddNewQuestion(Question q)
     {
-        Question question = new Question
-        {
-            SubjectId = questionSubject, Text = questionText, CorrectAnswer = correctAnswer, WrongAnswer1 = wrongAnswer1,
-            WrongAnswer2 = wrongAnswer2, WrongAnswer3 = wrongAnswer3, StatusId = Qstatus_Waiting, PlayerId = playerID 
-            
-        };
-        this.Questions.Add(question);
+       
+        this.Questions.Add(q);
         this.SaveChanges();
 
-        return question;
+        return q;
     }
     public Player showLogIn(string email, string pass)
     {
@@ -54,5 +49,9 @@ public partial class TriviaDbContext : DbContext
             return p;
         }
 
+    }
+    public List<QuestionSubject> Getubjects()
+    {
+        return  this.QuestionSubjects.ToList();
     }
 }
