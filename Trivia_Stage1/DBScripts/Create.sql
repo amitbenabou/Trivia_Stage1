@@ -52,13 +52,13 @@ go
 
 insert into PlayerType (TypeId,name) values (1,'Manager');
 insert into PlayerType (TypeId,name) values (2,'Master');
-insert into PlayerType (TypeId,name) values (3,'Tiron');
+insert into PlayerType (TypeId,name) values (3,'Rookie');
 select * from PlayerType
 go
 
 insert into QuestionStatus (StatusId, name) values (1, 'Approved');
 insert into QuestionStatus (StatusId, name) values (2, 'Wating');
-insert into QuestionStatus (StatusId, name) values (3, 'failed');
+insert into QuestionStatus (StatusId, name) values (3, 'Rejected');
 select * from QuestionStatus
 go
 
