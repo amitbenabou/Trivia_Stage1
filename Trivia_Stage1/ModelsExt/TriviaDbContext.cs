@@ -31,16 +31,17 @@ public partial class TriviaDbContext : DbContext
     }
     public Question AddNewQuestion(Question Q)
     {
-        Question question = new Question
-        {
-            SubjectId = questionSubject, Text = questionText, CorrectAnswer = correctAnswer, WrongAnswer1 = wrongAnswer1,
-            WrongAnswer2 = wrongAnswer2, WrongAnswer3 = wrongAnswer3, StatusId = Qstatus_Waiting, PlayerId = playerID 
-            
-        };
-        this.Questions.Add(question);
-        this.SaveChanges();
+        Question question = new Question { };
+        //{
+        //    SubjectId = questionSubject, Text = questionText, CorrectAnswer = correctAnswer, WrongAnswer1 = wrongAnswer1,
+        //    WrongAnswer2 = wrongAnswer2, WrongAnswer3 = wrongAnswer3, StatusId = Qstatus_Waiting, PlayerId = playerID 
 
-        return question;
+        //};
+        //    this.Questions.Add(question);
+        //    this.SaveChanges();
+        return  question;
+
+    //    return question;
     }
     public Player showLogIn(string email, string pass)
     {
@@ -55,4 +56,14 @@ public partial class TriviaDbContext : DbContext
         }
 
     }
+    public void  UpdatePlayer(Player p)
+    {
+        Entry(p).State=EntityState.Modified;
+        SaveChanges();
+    }
+     public List < Question> GetQuestions()
+     {
+      
+        return this.Questions.ToList ();
+     }
 }

@@ -16,7 +16,7 @@ namespace Trivia_Stage1.UI
         //For example, player login details...
         private Player currentPlayer;
         private Question currentQuestion;
-
+        private Random r = new Random();
         //Implememnt interface here
         public bool ShowLogin()
         {
@@ -216,18 +216,20 @@ namespace Trivia_Stage1.UI
         }
         public void ShowGame()
         {
-          
-            if(currentPlayer!= null) 
+            TriviaDbContext db = new TriviaDbContext();
+            List<Question> q = db.GetQuestions();
+            foreach(Question question in q)
             {
-                
-
-
-
-
-
-
-
+                DisplayQuestion(question);
             }
+            
+            
+
+
+
+
+
+        
             
 
 
@@ -345,5 +347,42 @@ namespace Trivia_Stage1.UI
             return name != null && name.Length >= 3;
         }
 
+        private int DisplayQuestion(Question q)
+        {
+            
+            int correct = r.Next(1, 5);
+            Console.WriteLine(q.Text);
+            switch (correct)
+            {
+                case 1:
+                    Console.WriteLine("1:  "+ q.CorrectAnswer);
+                    Console.WriteLine("2:  "  +q.WrongAnswer1);
+                    Console.WriteLine("3:  "  + q.WrongAnswer2);
+                    Console.WriteLine("4:  "  + q.WrongAnswer3);
+                    break;
+                case 2:
+                    Console.WriteLine("1:  " + q.WrongAnswer1);
+                    Console.WriteLine("2:  " + q.CorrectAnswer);
+                    Console.WriteLine("3:  " + q.WrongAnswer2);
+                    Console.WriteLine("4:  " + q.WrongAnswer3);
+                    break;
+                case 3:
+                    Console.WriteLine("1:  " +q.WrongAnswer1);
+                    Console.WriteLine("2:  " + q.WrongAnswer2);
+                    Console.WriteLine("3:  " + q.CorrectAnswer);
+                    Console.WriteLine("4:  " + q.WrongAnswer3);
+                    
+                    break;
+                case 4:
+                    Console.WriteLine("1:  " + q.WrongAnswer1);
+                    Console.WriteLine("2:  " + q.WrongAnswer2);
+                    Console.WriteLine("3:  " + q.WrongAnswer3);
+                    Console.WriteLine("4:  " + q.CorrectAnswer);
+                   
+                    break;
+            }
+
+            return correct;
+        }
     }
 }
