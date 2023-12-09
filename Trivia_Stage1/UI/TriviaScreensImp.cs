@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Trivia_Stage1.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Collections.Specialized.BitVector32;
+
 namespace Trivia_Stage1.UI
 {
     public enum QUESTION_STATUSES 
@@ -243,7 +245,73 @@ namespace Trivia_Stage1.UI
 
         public void ShowPendingQuestions()
         {
-            Console.WriteLine("Not implemented yet! Press any key to continue...");
+            char c = ' ';
+            if (currentPlayer.TypeId == 3)
+            {
+                Console.WriteLine("you dont have access to this page");
+                Console.WriteLine("Press (B)ack to go back or any other key to add question again...");
+                c = Console.ReadKey(true).KeyChar;
+            }
+            else
+            {
+                while (c != 'B' && c != 'b')
+                {
+                    CleareAndTtile("pending questions");
+                    TriviaDbContext db = new TriviaDbContext();
+                    List<Question> q = db.getPendingQ();
+                    foreach (Question question in q)
+                    {
+
+                        
+                            CleareAndTtile("question number" + question.QuestionId);
+                            Console.WriteLine(question.Text);
+                            Console.WriteLine("correct answer- " + question.CorrectAnswer);
+                            Console.WriteLine("wrong answer- " + question.WrongAnswer1);
+                            Console.WriteLine("wrong answer- " + question.WrongAnswer2);
+                            Console.WriteLine("wrong answer- " + question.WrongAnswer3);
+                            Console.WriteLine("press (a)pproved, press (r)ejected, press (b) to go back");
+                            char? ch = char.Parse(Console.ReadLine());
+
+                            if (ch =='a'||ch=='A')
+                            {
+                                try
+                                {
+                                    question.QuestionId = 1;
+                                    db.updateStatusQ(question);
+                                    Console.WriteLine("well done, question is approved");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("could not add the  Question");
+
+
+                                }
+                            }
+                            if (ch =='r'||ch=='R')
+                            {
+                                try
+                                {
+                                    question.QuestionId = 3;
+                                    db.updateStatusQ(question);
+                                    Console.WriteLine("question has been rejected");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("could not add the  Question");
+
+                                }
+
+                            }
+                            Console.WriteLine("Press (B)ack to go back or any other key to add question again");
+                            c = Console.ReadKey(true).KeyChar;
+
+                        
+                    
+                    }
+                    
+                }
+
+            }
             Console.ReadKey(true);
         }
         public void ShowGame()

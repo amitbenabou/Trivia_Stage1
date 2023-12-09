@@ -49,6 +49,7 @@ namespace Trivia_Stage1.UI
                 Console.Write($"Please choose (1 - {count}):");
                 int option = 0;
                 int.TryParse(Console.ReadLine(), out option);
+                
                 if (option >= 1 && option <= count)
                 {
                     if (option == count)//Exit

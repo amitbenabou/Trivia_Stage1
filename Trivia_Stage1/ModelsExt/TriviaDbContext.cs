@@ -39,7 +39,7 @@ public partial class TriviaDbContext : DbContext
     }
     public Player showLogIn(string email, string pass)
     {
-        Player p = this.Players.Where(e => e.PlayerMail == email && e.Password == pass).FirstOrDefault();
+        Player? p = this.Players.Where(e => e.PlayerMail == email && e.Password == pass).FirstOrDefault();
         if (p == null)
         {
             throw new Exception("email and password do not exist in DB");
@@ -66,4 +66,21 @@ public partial class TriviaDbContext : DbContext
       
         return this.Questions.ToList ();
      }
+
+    public List<Question> getPendingQ()
+    {
+        List<Question> pending = this.Questions.Where(q => q.StatusId == 2).ToList();
+        return pending;
+    }
+
+    public List<Question> getAprrovedQ()
+    {
+        List<Question> approved = this.Questions.Where(q => q.StatusId == 1).ToList();
+        return approved;
+    }
+    public void updateStatusQ(Question q)
+    {
+        Entry(q).State = EntityState.Modified;
+        this.SaveChanges();
+    }
 }
