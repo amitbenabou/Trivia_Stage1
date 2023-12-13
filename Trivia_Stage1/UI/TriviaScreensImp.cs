@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Trivia_Stage1.Models;
 using Microsoft.EntityFrameworkCore;
 using static System.Collections.Specialized.BitVector32;
+using System.Numerics;
 
 namespace Trivia_Stage1.UI
 {
@@ -245,99 +246,147 @@ namespace Trivia_Stage1.UI
 
         public void ShowPendingQuestions()
         {
-            char c = ' ';
-            if (currentPlayer.TypeId == 3)
+            if (this.currentPlayer.PlayerId==1||this.currentPlayer.PlayerId==2)
             {
-                Console.WriteLine("you dont have access to this page");
-                Console.WriteLine("Press (B)ack to go back or any other key to add question again...");
-                c = Console.ReadKey(true).KeyChar;
+                TriviaDbContext db =new TriviaDbContext();
+                char x = '5';
+                List<Question> q = new List<Question>();
+                q=db.getPendingQ();
+                for (int i = 0; i<q.Count; i++)
+                {
+                    CleareAndTtile("Pending Question");
+                    Console.WriteLine(q[i]);
+                    Console.WriteLine("Press 1 to approve , 2 to reject,3,to skip ,4 to Exit ");
+                    while (x=='5')
+                    {
+                        x=Console.ReadKey().KeyChar;
+                        if (x=='1')
+                        {
+                            q[i].StatusId = 1;
+
+                        }
+                        else if (x=='2')
+                        {
+                            q[i].StatusId = 2;
+                        }
+                        else if (x=='3')
+                        {
+                            q[i].StatusId = 3;
+                        }
+                        else if (x=='4')
+                        {
+                            db.SaveChanges();
+                            return;
+                        }
+                        else
+                        {
+                            x='5';
+                        }
+
+                    }
+
+                }
+                db.SaveChanges();
             }
+
+
             else
             {
-                while (c != 'B' && c != 'b')
+                Console.WriteLine("You don't have permission to view this  page ");
+                Console.WriteLine("Press any Key to continue");
+
+                Console.ReadKey(true);
+            }
+
+
+        }
+
+        TriviaDbContext db = new TriviaDbContext();
+        int[] ansArrNumbers = new int[4];
+        public void ShowQuestionAndAnswers()
+        {
+            Random rnd = new Random();
+            int questionId = rnd.Next(1, db.QuestionStatuses.Count() + 1);
+
+            Question  question = db.GetQ(questionId);
+            if (question!=null)
+                Console.WriteLine($"THEEEEE QUESTION ISSSSSS: {question.Text}");
+
+            // מראה שאלה בץקווה
+
+            string correctAnswer = db.GetAnsCorrect(questionId);
+            string answer1 = db.GetAns1(questionId);
+            string answer2 = db.GetAns2(questionId);
+            string answer3 = db.GetAns3(questionId);
+            int index = rnd.Next(0, 4);
+            string[] ansArr = new string[4];
+
+
+            int tempIndex = 0;
+            ansArr[0] = correctAnswer;
+            ansArr[1] = answer1;
+            ansArr[2] = answer2;
+            ansArr[3] = answer3;
+            for (int i = 0; i < ansArr.Length; i++)
+            {
+                while (index == tempIndex || ansArr[index] == null)
                 {
-                    CleareAndTtile("pending questions");
-                    TriviaDbContext db = new TriviaDbContext();
-                    List<Question> q = db.getPendingQ();
-                    foreach (Question question in q)
-                    {
-
-                        
-                            CleareAndTtile("question number" + question.QuestionId);
-                            Console.WriteLine(question.Text);
-                            Console.WriteLine("correct answer- " + question.CorrectAnswer);
-                            Console.WriteLine("wrong answer- " + question.WrongAnswer1);
-                            Console.WriteLine("wrong answer- " + question.WrongAnswer2);
-                            Console.WriteLine("wrong answer- " + question.WrongAnswer3);
-                            Console.WriteLine("press (a)pproved, press (r)ejected, press (b) to go back");
-                            char? ch = char.Parse(Console.ReadLine());
-
-                            if (ch =='a'||ch=='A')
-                            {
-                                try
-                                {
-                                    question.QuestionId = 1;
-                                    db.updateStatusQ(question);
-                                    Console.WriteLine("well done, question is approved");
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("could not add the  Question");
-
-
-                                }
-                            }
-                            if (ch =='r'||ch=='R')
-                            {
-                                try
-                                {
-                                    question.QuestionId = 3;
-                                    db.updateStatusQ(question);
-                                    Console.WriteLine("question has been rejected");
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine("could not add the  Question");
-
-                                }
-
-                            }
-                            Console.WriteLine("Press (B)ack to go back or any other key to add question again");
-                            c = Console.ReadKey(true).KeyChar;
-
-                        
-                    
-                    }
-                    
+                    index = rnd.Next(0, 4);
                 }
+                Console.WriteLine(ansArr[index]);
+                ansArrNumbers[i] = index;
+                ansArr[index] = null;
+                tempIndex = index;
 
             }
-            Console.ReadKey(true);
         }
+
+
+
         public void ShowGame()
         {
             TriviaDbContext db = new TriviaDbContext();
             List<Question> q = db.GetQuestions();
-            foreach(Question question in q)
+            foreach (Question question in q)
             {
                 DisplayQuestion(question);
+                ShowQuestionAndAnswers();
+                Console.WriteLine("What is your final answer?");
+                int pans = int.Parse(Console.ReadLine());
+                if (ansArrNumbers[pans] == 0)
+                {
+                    Console.WriteLine("Congrats! You were right! +10 points.");
+                    db.SetPoint(this.currentPlayer.PlayerId, db.GetPoints(this.currentPlayer.PlayerId) + 10);
+
+                }//שמנו את התשובות במערך של מספרים ועכשיו אנחנו רוצים למצוא את התשובה הנכונה ולראוץ אפ המשתמש צדק
+                else
+                {
+                    Console.WriteLine("Nice try! But you were wrong");
+                    Console.WriteLine(", -5 points");
+                    db.SetPoint(this.currentPlayer.PlayerId, db.GetPoints(this.currentPlayer.PlayerId) -5);
+                }
             }
-            
-            
+
+
+
+          
 
 
 
 
 
-        
-            
 
 
 
 
 
 
-            Console.WriteLine("Not implemented yet! Press any key to continue...");
+
+
+
+
+
+           
             Console.ReadKey(true);
         }
         public void ShowProfile()

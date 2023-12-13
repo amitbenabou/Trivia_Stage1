@@ -69,9 +69,72 @@ public partial class TriviaDbContext : DbContext
 
     public List<Question> getPendingQ()
     {
-        List<Question> pending = this.Questions.Where(q => q.StatusId == 2).ToList();
-        return pending;
+        return this.Questions.Where(x=>x.StatusId==2).ToList();
+
     }
+    public int GetPoints(int i)
+    {
+        return this.Players.Where(x => x.PlayerId==i).FirstOrDefault().PlayerScore;
+    }
+    public void SetPoint(int i, int j)
+    {
+        this.Players.Where(x => x.PlayerId==i).FirstOrDefault().PlayerScore = j;
+    }
+
+
+    public Question GetQ(int i)
+    {
+        return this.Questions.Where(x => x.QuestionId == i).FirstOrDefault();
+    }
+
+    public string GetAnsCorrect(int i)
+    {
+        return this.Questions.Where(x => x.QuestionId == i).FirstOrDefault().CorrectAnswer;
+    }
+    public string GetAns1(int i)
+    {
+        return this.Questions.Where(x => x.QuestionId == i).FirstOrDefault().WrongAnswer1;
+    }
+    public string GetAns2(int i)
+    {
+        return this.Questions.Where(x => x.QuestionId == i).FirstOrDefault().WrongAnswer2;
+    }
+    public string GetAns3(int i)
+    {
+        return this.Questions.Where(x => x.QuestionId == i).FirstOrDefault().WrongAnswer3;
+    }
+    public List<Question> GetPendingQs()
+    {
+        return this.Questions.Where(x => x.StatusId == 3).Include(q => q.Subject).Include(question => question.Player).ToList();
+    }
+
+    public List<Question> GetAddedQs(int i)
+    {
+        return this.Questions.Where(x => x.PlayerId == i).ToList();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public List<Question> getAprrovedQ()
     {
