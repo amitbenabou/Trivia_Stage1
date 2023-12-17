@@ -246,99 +246,134 @@ namespace Trivia_Stage1.UI
 
         public void ShowPendingQuestions()
         {
-            if (this.currentPlayer.PlayerId==1||this.currentPlayer.PlayerId==2)
+            CleareAndTtile("Pending Questions");
+            TriviaDbContext db = new TriviaDbContext();
+            char c = ' ';
+            List<Question> q = new db.showPending();
+            int cnt1 = 0;
+            int cnt2 = 0;
+            foreach (Question question in q)
             {
-                TriviaDbContext db =new TriviaDbContext();
-                char x = '5';
-                List<Question> q = new List<Question>();
-                q=db.getPendingQ();
-                for (int i = 0; i<q.Count; i++)
+                cnt1++;
+            }
+            if(currentPlayer.TypeId == 1 || currentPlayer.TypeId == 2)
+            {
+                if(cnt1== 0)
                 {
-                    CleareAndTtile("Pending Question");
-                    Console.WriteLine(q[i]);
-                    Console.WriteLine("Press 1 to approve , 2 to reject,3,to skip ,4 to Exit ");
-                    while (x=='5')
+                    Console.WriteLine("no more pending questions");
+                }
+                else
+                {
+                    foreach(Question question in q)
                     {
-                        x=Console.ReadKey().KeyChar;
-                        if (x=='1')
+                        while(c!='B' && c!='b')
                         {
-                            q[i].StatusId = 1;
-
+                            Console.WriteLine("the question: " + question.Text);
+                            Console.WriteLine("the subject of the question: " + question.Subject);
+                            Console.WriteLine(  "worng answers: " + question.WrongAnswer1);
+                            Console.WriteLine(question.WrongAnswer2);
+                            Console.WriteLine(question.WrongAnswer3);
+                            Console.WriteLine("correct asnwer: " + question.CorrectAnswer);
+                            Console.WriteLine("press (A)pprove the question \n press (R) to reject \n press (S) to skip questions \n (B)ack ");
+                            c - Console.ReadKey(true).KeyChar;
                         }
-                        else if (x=='2')
-                        {
-                            q[i].StatusId = 2;
-                        }
-                        else if (x=='3')
-                        {
-                            q[i].StatusId = 3;
-                        }
-                        else if (x=='4')
-                        {
-                            db.SaveChanges();
-                            return;
-                        }
-                        else
-                        {
-                            x='5';
-                        }
-
                     }
-
                 }
-                db.SaveChanges();
             }
 
+        //    if (this.currentPlayer.PlayerId==1||this.currentPlayer.PlayerId==2)
+        //    {
+        //        TriviaDbContext db =new TriviaDbContext();
+        //        char x = '5';
+        //        List<Question> q = new List<Question>();
+        //        q=db.getPendingQ();
+        //        for (int i = 0; i<q.Count; i++)
+        //        {
+        //            CleareAndTtile("Pending Question");
+        //            Console.WriteLine(q[i]);
+        //            Console.WriteLine("Press 1 to approve , 2 to reject,3,to skip ,4 to Exit ");
+        //            while (x=='5')
+        //            {
+        //                x=Console.ReadKey().KeyChar;
+        //                if (x=='1')
+        //                {
+        //                    q[i].StatusId = 1;
 
-            else
-            {
-                Console.WriteLine("You don't have permission to view this  page ");
-                Console.WriteLine("Press any Key to continue");
+        //                }
+        //                else if (x=='2')
+        //                {
+        //                    q[i].StatusId = 2;
+        //                }
+        //                else if (x=='3')
+        //                {
+        //                    q[i].StatusId = 3;
+        //                }
+        //                else if (x=='4')
+        //                {
+        //                    db.SaveChanges();
+        //                    return;
+        //                }
+        //                else
+        //                {
+        //                    x='5';
+        //                }
 
-                Console.ReadKey(true);
-            }
+        //            }
 
-
-        }
-
-        TriviaDbContext db = new TriviaDbContext();
-        int[] ansArrNumbers = new int[4];
-        public void ShowQuestionAndAnswers()
-        {
-            Random rnd = new Random();
-            int questionId = rnd.Next(1, db.QuestionStatuses.Count() + 1);
-
-            Question  question = db.GetQ(questionId);
-            if (question!=null)
-                Console.WriteLine($"THEEEEE QUESTION ISSSSSS: {question.Text}");
-
-            // מראה שאלה בץקווה
-
-            string correctAnswer = db.GetAnsCorrect(questionId);
-            string answer1 = db.GetAns1(questionId);
-            string answer2 = db.GetAns2(questionId);
-            string answer3 = db.GetAns3(questionId);
-            int index = rnd.Next(0, 4);
-            string[] ansArr = new string[4];
+        //        }
+        //        db.SaveChanges();
+        //    }
 
 
-            int tempIndex = 0;
-            ansArr[0] = correctAnswer;
-            ansArr[1] = answer1;
-            ansArr[2] = answer2;
-            ansArr[3] = answer3;
-            for (int i = 0; i < ansArr.Length; i++)
-            {
-                while (index == tempIndex || ansArr[index] == null)
-                {
-                    index = rnd.Next(0, 4);
-                }
-                Console.WriteLine(ansArr[index]);
-                ansArrNumbers[i] = index;
-                ansArr[index] = null;
-                tempIndex = index;
+        //    else
+        //    {
+        //        Console.WriteLine("You don't have permission to view this  page ");
+        //        Console.WriteLine("Press any Key to continue");
 
-            }
+        //        Console.ReadKey(true);
+        //    }
+
+
+        //}
+
+        //TriviaDbContext db = new TriviaDbContext();
+        //int[] ansArrNumbers = new int[4];
+        //public void ShowQuestionAndAnswers()
+        //{
+        //    Random rnd = new Random();
+        //    int questionId = rnd.Next(1, db.QuestionStatuses.Count() + 1);
+
+        //    Question  question = db.GetQ(questionId);
+        //    if (question!=null)
+        //        Console.WriteLine($"THEEEEE QUESTION ISSSSSS: {question.Text}");
+
+        //    // מראה שאלה בץקווה
+
+        //    string correctAnswer = db.GetAnsCorrect(questionId);
+        //    string answer1 = db.GetAns1(questionId);
+        //    string answer2 = db.GetAns2(questionId);
+        //    string answer3 = db.GetAns3(questionId);
+        //    int index = rnd.Next(0, 4);
+        //    string[] ansArr = new string[4];
+
+
+        //    int tempIndex = 0;
+        //    ansArr[0] = correctAnswer;
+        //    ansArr[1] = answer1;
+        //    ansArr[2] = answer2;
+        //    ansArr[3] = answer3;
+        //    for (int i = 0; i < ansArr.Length; i++)
+        //    {
+        //        while (index == tempIndex || ansArr[index] == null)
+        //        {
+        //            index = rnd.Next(0, 4);
+        //        }
+        //        Console.WriteLine(ansArr[index]);
+        //        ansArrNumbers[i] = index;
+        //        ansArr[index] = null;
+        //        tempIndex = index;
+
+        //    }
         }
 
 

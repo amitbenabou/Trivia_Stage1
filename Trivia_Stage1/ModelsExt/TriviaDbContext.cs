@@ -23,7 +23,7 @@ public partial class TriviaDbContext : DbContext
             PlayerScore = 0,
             TypeId = PLAYER_ROOKIE
             
-       };
+        };
         this.Players.Add(player);
         this.SaveChanges();
 
@@ -108,33 +108,26 @@ public partial class TriviaDbContext : DbContext
         return this.Questions.Where(x => x.StatusId == 3).Include(q => q.Subject).Include(question => question.Player).ToList();
     }
 
+    public void pendingToApproved(Question q)
+    {
+        q.StatusId = 1;
+        this.SaveChanges();
+    }
+
+    public void pendingToApproved(Question q)
+    {
+        q.StatusId = 3;
+        this.SaveChanges();
+    }
+
     public List<Question> GetAddedQs(int i)
     {
         return this.Questions.Where(x => x.PlayerId == i).ToList();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public List<Question> showPending()
+    {
+        return this.Questions.where(q => q.StatusId == 2).ToList();
+    }
 
     public List<Question> getAprrovedQ()
     {
