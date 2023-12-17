@@ -21,12 +21,11 @@ namespace Trivia_Stage1.UI
     public class TriviaScreensImp:ITriviaScreens
     {
 
-        //Place here any state you would like to keep during the app life time
-        //For example, player login details...
-        private Player currentPlayer;
-        private Question currentQuestion;
+        
+        private Player? currentPlayer;
+        private Question? currentQuestion;
         private Random r = new Random();
-        //Implememnt interface here
+        
         public bool ShowLogin()
         {
             char c = ' ';
@@ -72,18 +71,15 @@ namespace Trivia_Stage1.UI
         }
         public bool ShowSignup()
         {
-            //Logout user if anyone is logged in!
-            //A reference to the logged in user should be stored as a member variable
-            //in this class! Example:
+            
             this.currentPlayer = null;
 
-            //Loop through inputs until a user/player is created or 
-            //user choose to go back to menu
+            
             char c = ' ';
             bool success = true;
             while (c != 'B' && c != 'b' && this.currentPlayer == null)
             {
-                //Clear screen
+               
                 CleareAndTtile("Signup");
 
                 Console.Write("Please Type your email: ");
@@ -112,8 +108,7 @@ namespace Trivia_Stage1.UI
 
 
                 Console.WriteLine("Connecting to Server...");
-                //Create instance of Business Logic and call the signup method
-                // *For example:
+                
                 try
                 {
                     TriviaDbContext db = new TriviaDbContext();
@@ -129,12 +124,12 @@ namespace Trivia_Stage1.UI
 
 
 
-                //Provide a proper message for example:
+                
                 Console.WriteLine("Press (B)ack to go back or any other key to signup again...");
-                //Get another input from user
+                
                 c = Console.ReadKey(true).KeyChar;
             }
-            //return true if signup suceeded!
+           
             return (success);
         }
         private int ShowSubjects()
@@ -179,14 +174,7 @@ namespace Trivia_Stage1.UI
                 while (c != 'B' && c != 'b')
                 {
                     CleareAndTtile("add question");
-                    //Console.Write("Please chose your question subject: History (type 1), Sports (type 2), Politics(type 3), Ramon(type 4),Science (type 5)  ");
-                    //Q.SubjectId = int.Parse(Console.ReadLine());
-                    //while (Q.SubjectId < 1)
-                    //{
-                    //    Console.Write("Question length cant be under 1,Please Type your question subject again ");
-                    //    Q.SubjectId =  int.Parse(Console.ReadLine());
-
-                    //}
+                    
                     Q.SubjectId = ShowSubjects();
                     Console.Write("Please Type your question ");
                     Q.Text = Console.ReadLine();
@@ -249,7 +237,7 @@ namespace Trivia_Stage1.UI
             CleareAndTtile("Pending Questions");
             TriviaDbContext db = new TriviaDbContext();
             char c = ' ';
-            List<Question> q = new db.showPending();
+            List<Question> q = db.showPending();
             int cnt1 = 0;
             int cnt2 = 0;
             foreach (Question question in q)
@@ -269,160 +257,99 @@ namespace Trivia_Stage1.UI
                         while(c!='B' && c!='b')
                         {
                             Console.WriteLine("the question: " + question.Text);
-                            Console.WriteLine("the subject of the question: " + question.Subject);
+                            Console.WriteLine("the subject of the question: " + question.SubjectId);
                             Console.WriteLine(  "worng answers: " + question.WrongAnswer1);
                             Console.WriteLine(question.WrongAnswer2);
                             Console.WriteLine(question.WrongAnswer3);
                             Console.WriteLine("correct asnwer: " + question.CorrectAnswer);
                             Console.WriteLine("press (A)pprove the question \n press (R) to reject \n press (S) to skip questions \n (B)ack ");
-                            c - Console.ReadKey(true).KeyChar;
+                            c = Console.ReadKey(true).KeyChar;
+                            if(c == 'A' || c == 'a')
+                            {
+                                try
+                                {
+                                    db.pendingToApproved(question);
+                                    Console.WriteLine("the question is approved");
+                                }
+                                catch(Exception e)
+                                {
+                                    Console.WriteLine("failed to approve");
+                                }
+                            }
+                            if(c=='R' || c=='r')
+                            {
+                                try
+                                {
+                                    Console.WriteLine("the question is rejeted");
+                                    db.pendingToRejected(question);
+
+                                }
+                                catch(Exception e)
+                                {
+                                    Console.WriteLine("failed to reject");
+                                }
+                            }
+                            if (c=='s'||c=='S')
+                            {
+
+                            }
+                            cnt2--;
                         }
                     }
                 }
             }
-
-        //    if (this.currentPlayer.PlayerId==1||this.currentPlayer.PlayerId==2)
-        //    {
-        //        TriviaDbContext db =new TriviaDbContext();
-        //        char x = '5';
-        //        List<Question> q = new List<Question>();
-        //        q=db.getPendingQ();
-        //        for (int i = 0; i<q.Count; i++)
-        //        {
-        //            CleareAndTtile("Pending Question");
-        //            Console.WriteLine(q[i]);
-        //            Console.WriteLine("Press 1 to approve , 2 to reject,3,to skip ,4 to Exit ");
-        //            while (x=='5')
-        //            {
-        //                x=Console.ReadKey().KeyChar;
-        //                if (x=='1')
-        //                {
-        //                    q[i].StatusId = 1;
-
-        //                }
-        //                else if (x=='2')
-        //                {
-        //                    q[i].StatusId = 2;
-        //                }
-        //                else if (x=='3')
-        //                {
-        //                    q[i].StatusId = 3;
-        //                }
-        //                else if (x=='4')
-        //                {
-        //                    db.SaveChanges();
-        //                    return;
-        //                }
-        //                else
-        //                {
-        //                    x='5';
-        //                }
-
-        //            }
-
-        //        }
-        //        db.SaveChanges();
-        //    }
-
-
-        //    else
-        //    {
-        //        Console.WriteLine("You don't have permission to view this  page ");
-        //        Console.WriteLine("Press any Key to continue");
-
-        //        Console.ReadKey(true);
-        //    }
-
-
-        //}
-
-        //TriviaDbContext db = new TriviaDbContext();
-        //int[] ansArrNumbers = new int[4];
-        //public void ShowQuestionAndAnswers()
-        //{
-        //    Random rnd = new Random();
-        //    int questionId = rnd.Next(1, db.QuestionStatuses.Count() + 1);
-
-        //    Question  question = db.GetQ(questionId);
-        //    if (question!=null)
-        //        Console.WriteLine($"THEEEEE QUESTION ISSSSSS: {question.Text}");
-
-        //    // מראה שאלה בץקווה
-
-        //    string correctAnswer = db.GetAnsCorrect(questionId);
-        //    string answer1 = db.GetAns1(questionId);
-        //    string answer2 = db.GetAns2(questionId);
-        //    string answer3 = db.GetAns3(questionId);
-        //    int index = rnd.Next(0, 4);
-        //    string[] ansArr = new string[4];
-
-
-        //    int tempIndex = 0;
-        //    ansArr[0] = correctAnswer;
-        //    ansArr[1] = answer1;
-        //    ansArr[2] = answer2;
-        //    ansArr[3] = answer3;
-        //    for (int i = 0; i < ansArr.Length; i++)
-        //    {
-        //        while (index == tempIndex || ansArr[index] == null)
-        //        {
-        //            index = rnd.Next(0, 4);
-        //        }
-        //        Console.WriteLine(ansArr[index]);
-        //        ansArrNumbers[i] = index;
-        //        ansArr[index] = null;
-        //        tempIndex = index;
-
-        //    }
+            else
+            {
+                Console.WriteLine("only players at level master or manager can change questions' status");
+            }
+            Console.WriteLine("press (B)ack to go back to menu");
+            c = Console.ReadKey(true).KeyChar;
         }
 
 
 
         public void ShowGame()
         {
+            CleareAndTtile("Game");
             TriviaDbContext db = new TriviaDbContext();
-            List<Question> q = db.GetQuestions();
-            foreach (Question question in q)
+            char c = ' ';
+            bool success = false;
+            List<Question> questions = db.getAprrovedQ();
+            string answer = " ";
+            int cnt1 = 0;
+            int cnt2 = 0;
+            foreach(Question question in questions)
             {
-                DisplayQuestion(question);
-                ShowQuestionAndAnswers();
-                Console.WriteLine("What is your final answer?");
-                int pans = int.Parse(Console.ReadLine());
-                if (ansArrNumbers[pans] == 0)
-                {
-                    Console.WriteLine("Congrats! You were right! +10 points.");
-                    db.SetPoint(this.currentPlayer.PlayerId, db.GetPoints(this.currentPlayer.PlayerId) + 10);
-
-                }//שמנו את התשובות במערך של מספרים ועכשיו אנחנו רוצים למצוא את התשובה הנכונה ולראוץ אפ המשתמש צדק
-                else
-                {
-                    Console.WriteLine("Nice try! But you were wrong");
-                    Console.WriteLine(", -5 points");
-                    db.SetPoint(this.currentPlayer.PlayerId, db.GetPoints(this.currentPlayer.PlayerId) -5);
-                }
+                cnt1++;
             }
-
-
-
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-           
-            Console.ReadKey(true);
+            while (c!='B' && c!='b' && cnt2<cnt1)
+            {
+                foreach(Question question in questions)
+                {
+                    Console.WriteLine(question.Text);
+                    Console.WriteLine(question.WrongAnswer1);
+                    Console.WriteLine(question.WrongAnswer2);
+                    Console.WriteLine(question.WrongAnswer3);
+                    Console.WriteLine(question.CorrectAnswer);
+                    Console.WriteLine("type your answer");
+                    answer=Console.ReadLine();
+                    if(answer == question.CorrectAnswer)
+                    {
+                        currentPlayer.PlayerScore += 10;
+                        Console.WriteLine("well done!");
+                        success = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("you chose the wrong answer");
+                        success = false;
+                    }
+                    cnt2++;
+                }
+                Console.WriteLine("press (B)ack to go back to menu");
+                c = Console.ReadKey(true).KeyChar;
+            }
+            
         }
         public void ShowProfile()
         {
@@ -441,8 +368,8 @@ namespace Trivia_Stage1.UI
                 Console.WriteLine($"Name:\t{currentPlayer.PlayerName}");
                 Console.WriteLine($"Mail:\t{currentPlayer.PlayerMail}");
                 Console.WriteLine($"password:\t{currentPlayer.Password}");
-                Console.WriteLine($"TypePlayer:\t{currentPlayer.TypeId}");
-                Console.WriteLine($"PlayerID:\t{currentPlayer.PlayerId}");
+                Console.WriteLine($"TypePlayer:\t{currentPlayer.TypeId.ToString()}");
+                Console.WriteLine($"PlayerID:\t{currentPlayer.PlayerId.ToString()}");
                 Console.WriteLine($"Player score:\t{currentPlayer.PlayerScore}");
                 Console.WriteLine(" Press (M) To Update The Mail Press (N) To Update The Name Press (P) To Update The Password");
                 c = Console.ReadKey(true).KeyChar;
@@ -490,7 +417,7 @@ namespace Trivia_Stage1.UI
                 }
                 try
                 {
-                    //db.UpdatePlayer(currentPlayer);
+                    
                     Console.WriteLine("your changes succseeded");
                 }
                 catch (Exception e)
@@ -505,7 +432,7 @@ namespace Trivia_Stage1.UI
             
         }
 
-        //Private helper methodfs down here...
+        
         private void CleareAndTtile(string title)
         {
             Console.Clear();

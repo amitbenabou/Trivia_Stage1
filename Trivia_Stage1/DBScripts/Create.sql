@@ -3,7 +3,7 @@ drop database TriviaDB
 Go
 
 create database TriviaDB
-go
+Go
 
 Use [TriviaDB]
 Go
@@ -68,14 +68,21 @@ insert into QuestionSubject (name) values ('Politics')
 insert into QuestionSubject (name) values ( 'Ramon')
 insert into QuestionSubject (name) values ('Science')
 select * from QuestionSubject
-go
+
 
 insert into Player(typeID,PlayerName,PlayerMail,PlayerScore,Password) values(1,'Hadas','hadas@gmail.com',0,'Hg2501');
 select * from Player
-go
+
+ 
  insert into  Questions   (StatusId,PlayerId,SubjectId,correctAnswer,wrongAnswer1,wrongAnswer2,wrongAnswer3,Text) values (1,1,4,'ilan ramon','amit ramon', 'hadas ramon','adar ramon','what is the name of the school?');
  select * from Player
-go
+
+
 select * from QuestionStatus
 
-update PLayer set PlayerScore=100 where PlayerId=2
+update Player set PlayerScore=100 where PlayerId=2
+select * from Player
+select * from PlayerType
+select *from Questions
+select * from QuestionStatus
+select * from QuestionSubject

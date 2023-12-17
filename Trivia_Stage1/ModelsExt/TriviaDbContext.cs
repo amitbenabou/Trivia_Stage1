@@ -54,6 +54,7 @@ public partial class TriviaDbContext : DbContext
     {
         return  this.QuestionSubjects.ToList();
     }
+    
 
     
     public void  UpdatePlayer(Player p)
@@ -114,7 +115,7 @@ public partial class TriviaDbContext : DbContext
         this.SaveChanges();
     }
 
-    public void pendingToApproved(Question q)
+    public void pendingToRejected(Question q)
     {
         q.StatusId = 3;
         this.SaveChanges();
@@ -126,7 +127,7 @@ public partial class TriviaDbContext : DbContext
     }
     public List<Question> showPending()
     {
-        return this.Questions.where(q => q.StatusId == 2).ToList();
+        return this.Questions.Where(q => q.StatusId == 2).ToList();
     }
 
     public List<Question> getAprrovedQ()
